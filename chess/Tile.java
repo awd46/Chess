@@ -1,7 +1,8 @@
 package chess;
 
 public abstract class Tile {
-    int tileCoordinate;
+
+    protected final int tileCoordinate;
 
     Tile(int tileCoordinate){
         this.tileCoordinate = tileCoordinate;
@@ -12,7 +13,7 @@ public abstract class Tile {
     public abstract Pieces getPiece();
 
     public static final class EmptyTile extends Tile{
-        EmptyTile(int coordinate){
+        EmptyTile(final int coordinate){
             super(coordinate);
         }
         @Override
@@ -25,7 +26,7 @@ public abstract class Tile {
         }
     }
     public static final class OccupiedTile extends Tile{
-        Pieces pieceOnTile;
+        private final Pieces pieceOnTile;
 
         OccupiedTile(int tileCoordinate, Pieces pieceOnTile){
             super(tileCoordinate);

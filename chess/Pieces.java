@@ -1,7 +1,11 @@
 package chess;
 
 public class Pieces {
+
+    public int tileCoordinate;
+    public Player color;
     
+
 }
 
 class Pawn extends Pieces{
