@@ -2,22 +2,39 @@ package chess;
 
 public abstract class Tile {
 
-    protected final int tileCoordinate;
+    protected final int tileNumber;
+    private Piece piece;
 
-    Tile(int tileCoordinate){
-        this.tileCoordinate = tileCoordinate;
+    Tile(int tileNumber){
+        this.tileNumber = tileNumber;
     }
 
-    public abstract boolean isTileOccupied();
+    public int getTileNumber(){
+        return tileNumber;
+    }
 
-    public abstract Pieces getPiece();
+    public boolean isOccupied(){
+        return piece != null;
+    }
+
+    public Piece getPiece(){
+        return piece;
+    }
+
+    public void setPiece(Piece piece){
+        this.piece = piece;
+    }
+
+    public void clearPiece(){
+        this.piece = null;
+    }
 
     public static final class EmptyTile extends Tile{
-        EmptyTile(final int coordinate){
-            super(coordinate);
+        EmptyTile(final int tileNumber){
+            super(tileNumber);
         }
         @Override
-        public boolean isTileOccupied(){
+        public boolean isOccupied(){
             return false;
         }
         @Override
@@ -28,8 +45,8 @@ public abstract class Tile {
     public static final class OccupiedTile extends Tile{
         private final Pieces pieceOnTile;
 
-        OccupiedTile(int tileCoordinate, Pieces pieceOnTile){
-            super(tileCoordinate);
+        OccupiedTile(int tileNumber, Pieces pieceOnTile){
+            super(tileNumber);
             this.pieceOnTile = pieceOnTile;
         }
         @Override
@@ -37,7 +54,7 @@ public abstract class Tile {
             return true;
         }
         @Override
-        public Pieces getPiece(){
+        public Piece getPiece(){
             return this.pieceOnTile;
         }
     }
