@@ -38,19 +38,19 @@ public abstract class Tile {
             return false;
         }
         @Override
-        public Pieces getPiece(){
+        public Piece getPiece(){
             return null;
         }
     }
     public static final class OccupiedTile extends Tile{
-        private final Pieces pieceOnTile;
+        private final Piece pieceOnTile;
 
-        OccupiedTile(int tileNumber, Pieces pieceOnTile){
+        OccupiedTile(int tileNumber, Piece pieceOnTile){
             super(tileNumber);
             this.pieceOnTile = pieceOnTile;
         }
         @Override
-        public boolean isTileOccupied(){
+        public boolean isOccupied(){
             return true;
         }
         @Override

@@ -12,7 +12,9 @@ public class Piece {
         this.tileCoordinate = tileCoordinate;
         this.color = color;
     }
-    public abstract List<Move> calculateLegalMoves(Board board);
+    public List<Move> calculateLegalMoves(Board board) {
+        return null;
+    }
 }
 
 class Pawn extends Piece{
@@ -40,7 +42,7 @@ class Pawn extends Piece{
         int[] candidateOffsets = (this.color == Player.WHITE) ? new int[] {-7, -9} : new int[] {7, 9};
         for(int offset : candidateOffsets){
             destinationTile = currentTile + (offset * direction);
-            if(BoardUtils.isValidTile(destinationTile)){
+            if(Board.isValidTile(destinationTile)){
                 Tile destinationTileObj = board.getTile(destinationTile);
                 if(destinationTileObj.isOccupied()){
                     Piece pieceOnDestination = destinationTileObj.getPiece();
