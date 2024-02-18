@@ -12,6 +12,11 @@ public class Piece {
         this.tileCoordinate = tileCoordinate;
         this.color = color;
     }
+    
+    public Player getColor(){
+        return color;
+    }
+
     public List<Move> calculateLegalMoves(Board board) {
         return null;
     }
@@ -55,43 +60,151 @@ class Pawn extends Piece{
         return legalMoves;
     }
 }
+
 class Knight extends Piece{
 
     Knight(int tileCoordinate, Player color) {
         super(tileCoordinate, color);
-        //TODO Auto-generated constructor stub
     }
-
+    public List<Move> calculateLegalMoves(Board board){
+        List<Move> legalMoves = new ArrayList<>();
+        int currentTile = this.tileCoordinate;
+        int[] candidateOffsets = {-17, -15, -10, -6, 6, 10, 15, 17};
+        for(int offset : candidateOffsets){
+            int destinationTile = currentTile + offset;
+            if(Board.isValidTile(destinationTile)){
+                Tile destinationTileObj = board.getTile(destinationTile);
+                if(!destinationTileObj.isOccupied() || destinationTileObj.getPiece().getColor() != this.color){
+                    legalMoves.add(new Move(currentTile, destinationTile));
+                }
+            }
+        }
+        return legalMoves;
+    }
 }
+
 class Rook extends Piece{
 
     Rook(int tileCoordinate, Player color) {
         super(tileCoordinate, color);
-        //TODO Auto-generated constructor stub
     }
-
+    public List<Move> calculateLegalMoves(Board board){
+        List<Move> legalMoves = new ArrayList<>();
+        int currentTile = this.tileCoordinate;
+        int[] candidateOffsets = {-8, 8, -1, 1};
+        for(int offset : candidateOffsets){
+            int destinationTile = currentTile;
+            while(Board.isValidTile(destinationTile + offset)){
+                destinationTile += offset;
+                Tile destinationTileObj = board.getTile(destinationTile);
+                if(!destinationTileObj.isOccupied()){
+                    legalMoves.add(new Move(currentTile, destinationTile));
+                }else{
+                    Piece pieceOnDestination = destinationTileObj.getPiece();
+                    if(pieceOnDestination.getColor() != this.getColor()){
+                        legalMoves.add(new Move(currentTile, destinationTile));
+                    }
+                    break;
+                }
+            }
+        }
+        return legalMoves;
+    }
 }
+
 class Bishop extends Piece{
 
     Bishop(int tileCoordinate, Player color) {
         super(tileCoordinate, color);
-        //TODO Auto-generated constructor stub
     }
-
+    public List<Move> calculateLegalMoves(Board board){
+        List<Move> legalMoves = new ArrayList<>();
+        int currentTile = this.tileCoordinate;
+        int[] candidateOffsets = {-9, -7, 7, 9};
+        for(int offset : candidateOffsets){
+            int destinationTile = currentTile;
+            while(Board.isValidTile(destinationTile + offset)){
+                destinationTile += offset;
+                Tile destinationTileObj = board.getTile(destinationTile);
+                if(!destinationTileObj.isOccupied()){
+                    legalMoves.add(new Move(currentTile, destinationTile));
+                }else{
+                    Piece pieceOnDestination = destinationTileObj.getPiece();
+                    if(pieceOnDestination.getColor() != this.getColor()){
+                        legalMoves.add(new Move(currentTile, destinationTile));
+                    }
+                    break;
+                }
+            }
+        }
+        return legalMoves;
+    }
 }
+
 class King extends Piece{
 
     King(int tileCoordinate, Player color) {
         super(tileCoordinate, color);
-        //TODO Auto-generated constructor stub
     }
-
+    public List<Move> calculateLegalMoves(Board board){
+        List<Move> legalMoves = new ArrayList<>();
+        int currentTile = this.tileCoordinate;
+        int[] candidateOffsets = {-9, -8, -7, -1, 1, 7, 8, 9};
+        for(int offset : candidateOffsets){
+            int destinationTile = currentTile + offset;
+            if(Board.isValidTile(destinationTile)){
+                Tile destinationTileObj = board.getTile(destinationTile);
+                if(!destinationTileObj.isOccupied() || destinationTileObj.getPiece().getColor() != this.getColor()){
+                    legalMoves.add(new Move(currentTile, destinationTile));
+                }
+            }
+        }
+        return legalMoves;
+    }
 }
+
 class Queen extends Piece{
 
     Queen(int tileCoordinate, Player color) {
         super(tileCoordinate, color);
-        //TODO Auto-generated constructor stub
     }
-
+    public List<Move> calculateLegalMoves(Board board){
+        List<Move> legalMoves = new ArrayList<>();
+        int currentTile = this.tileCoordinate;
+        int[] horizontalOffsets = {-8, 8, -1, 1};
+        int[] diagonalOffsets = {-9, -7, 7, 9};
+        for(int offset : horizontalOffsets){
+            int destinationTile = currentTile + offset;
+            while(Board.isValidTile(destinationTile)){
+                Tile destinationTileObj = board.getTile(destinationTile);
+                if(!destinationTileObj.isOccupied()){
+                    legalMoves.add(new Move(currentTile, destinationTile));
+                }else{
+                    Piece pieceOnDestination = destinationTileObj.getPiece();
+                    if(pieceOnDestination.getColor() != this.getColor()){
+                        legalMoves.add(new Move(currentTile, destinationTile));
+                    }
+                    break;
+                }
+                destinationTile += offset;
+            }
+        }
+        for(int offset : diagonalOffsets){
+            int destinationTile = currentTile;
+            while(Board.isValidTile(destinationTile + offset)){
+                destinationTile += offset;
+                Tile destinationTileObj = board.getTile(destinationTile);
+                if(!destinationTileObj.isOccupied()){
+                    legalMoves.add(new Move(currentTile, destinationTile));
+                }else{
+                    Piece pieceOnDestination = destinationTileObj.getPiece();
+                    if(pieceOnDestination.getColor() != this.getColor()){
+                        legalMoves.add(new Move(currentTile, destinationTile));
+                    }
+                    break;
+                }
+            }
+        }
+        return legalMoves;
+    }
 }

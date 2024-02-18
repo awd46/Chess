@@ -2,8 +2,20 @@ package chess;
 
 public class Move {
 
-    public Move(int currentTile, int destinationTile) {
-        //TODO Auto-generated constructor stub
+    private final int currentTile;
+    private final int destinationTile;
+
+    public Move(int currentTile, int destinationTile){
+        this.currentTile = currentTile;
+        this.destinationTile = destinationTile;
+    }
+
+    public int getcurrentTile(){
+        return currentTile;
+    }
+
+    public int getdestinationTile(){
+        return destinationTile;
     }
     
 }
