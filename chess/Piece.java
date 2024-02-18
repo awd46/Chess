@@ -7,6 +7,15 @@ public abstract class Piece {
 
     protected int tileCoordinate;
     protected final Player color;
+    private boolean hasMoved;
+
+    public boolean hasMoved(){
+        return hasMoved;
+    }
+
+    public void setMoves(boolean hasMoved){
+        this.hasMoved = hasMoved;
+    }
     
     public Piece(int tileCoordinate, Player color){
         this.tileCoordinate = tileCoordinate;
