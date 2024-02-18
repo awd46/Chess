@@ -34,6 +34,33 @@ public class Board {
         }
     }
 
+    public void makeMove(int sourceTileNumber, int destinationTileNumber){
+        Tile sourceTile = getTile(sourceTileNumber);
+        Tile destinationTile = getTile(destinationTileNumber);
+        Piece piece = sourceTile.getPiece();
+        //handling castling
+        if(){
+
+        }
+
+        //handling en passant
+        if(){
+
+        }
+
+        //handling pawn promotion
+        if(){
+
+        }
+
+        //update source tile to be empty
+        sourceTile.clearPiece();
+        //set destination tile with the moved piece
+        destinationTile.setPiece(piece);
+        //update the pieces tile coordinate to reflect its new position
+        piece.setTileCoordinate(destinationTileNumber);
+    }
+
     public Tile getTile(int tileNumber){
         //convert tileNumber to row and colum indices
         int row = (tileNumber - 1) / 8;

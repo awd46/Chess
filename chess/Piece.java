@@ -3,23 +3,30 @@ package chess;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Piece {
+public abstract class Piece {
 
-    protected final int tileCoordinate;
+    protected int tileCoordinate;
     protected final Player color;
     
-    Piece(final int tileCoordinate, final Player color){
+    public Piece(int tileCoordinate, Player color){
         this.tileCoordinate = tileCoordinate;
         this.color = color;
     }
     
+    public int getTileCoordinate(){
+        return tileCoordinate;
+    }
+
     public Player getColor(){
         return color;
     }
 
-    public List<Move> calculateLegalMoves(Board board) {
-        return null;
+    public abstract List<Move> calculateLegalMoves(Board board);
+    
+    public void setTileCoordinate(int tileCoordinate){
+        this.tileCoordinate = tileCoordinate;
     }
+
 }
 
 class Pawn extends Piece{
