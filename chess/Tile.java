@@ -1,5 +1,6 @@
 package chess;
 
+
 public abstract class Tile {
 
     protected final int tileNumber;

@@ -2,6 +2,9 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import chess.Chess.Player;
 
 class ReturnPiece {
 	static enum PieceType {WP, WR, WN, WB, WQ, WK, 
@@ -37,7 +40,7 @@ class ReturnPlay {
 
 public class Chess {
 	
-	enum Player { white, black }
+	enum Player { white, black, BLACK, WHITE }
 	
 	/**
 	 * Plays the next move for whichever player has the turn.
@@ -48,19 +51,70 @@ public class Chess {
 	 *         See the section "The Chess class" in the assignment description for details of
 	 *         the contents of the returned ReturnPlay instance.
 	 */
+	private static final int WHITE_TURN = 0;
+	private static final int BLACK_TURN = 0;
+	private static int turn = WHITE_TURN;
 
 	public static ReturnPlay play(String move) {
-
-		/* FOLLOWING LINE IS A PLACEHOLDER TO MAKE COMPILER HAPPY */
-		/* WHEN YOU FILL IN THIS METHOD, YOU NEED TO RETURN A ReturnPlay OBJECT */
-		return null;
+		ReturnPlay returnPlay = new ReturnPlay();
+    Player currentPlayer = getCurrentPlayer(turn);
+    // Parse the move
+    int[] parsedMove = Coordinates.parseMove(move);
+    int sourceSquare = parsedMove[0];
+    int destinationSquare = parsedMove[1];
+    // Get the tile objects for the source and destination squares
+    Tile sourceTile = board.getTile(sourceSquare);
+    Tile destinationTile = board.getTile(destinationSquare);
+    // Check if the move is legal
+    Piece piece = sourceTile.getPiece();
+    if (piece == null || piece.getColor() != currentPlayer) {
+        returnPlay.piecesOnBoard = ChessUtils.getPiecesOnBoard(board, currentPlayer);
+        returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
+        return returnPlay;
+    }
+    // Check if the move is valid for the piece
+    List<Move> legalMoves = piece.calculateLegalMoves(board);
+    boolean isValidMove = false;
+    for (Move legalMove : legalMoves) {
+        if (legalMove.getdestinationTile() == destinationSquare) {
+            isValidMove = true;
+            break;
+        }
+    }
+    if (!isValidMove) {
+        returnPlay.piecesOnBoard = ChessUtils.getPiecesOnBoard(board, currentPlayer);
+        returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
+        return returnPlay;
+    }
+    // Make the move on the board
+    board.makeMove(sourceSquare, destinationSquare, move);
+    // Check for check, checkmate, stalemate
+    if (board.isInCheck(currentPlayer)) {
+        returnPlay.message = ReturnPlay.Message.CHECK;
+        if (board.isInCheckMate(currentPlayer)) {
+            returnPlay.message = (currentPlayer == Player.WHITE) ? ReturnPlay.Message.CHECKMATE_WHITE_WINS : ReturnPlay.Message.CHECKMATE_BLACK_WINS;
+        }
+    } else if (board.isInCheckMate(currentPlayer)) {
+        returnPlay.message = (currentPlayer == Player.WHITE) ? ReturnPlay.Message.CHECKMATE_WHITE_WINS : ReturnPlay.Message.CHECKMATE_BLACK_WINS;
+    }
+    // Update the turn
+    turn = (turn == WHITE_TURN) ? BLACK_TURN : WHITE_TURN; 
+    // Populate the pieces on board in the return play
+    returnPlay.piecesOnBoard = ChessUtils.getPiecesOnBoard(board, currentPlayer);
+    return returnPlay;
 	}
-	
 	
 	/**
 	 * This method should reset the game, and start from scratch.
 	 */
 	public static void start() {
-		/* FILL IN THIS METHOD */
+		turn = WHITE_TURN;
+		Player whitePlayer = Player.WHITE;
+		Player blackPlayer = Player.BLACK;
+		Board board = new Board(whitePlayer, blackPlayer);
 	}
+
+	private static Player getCurrentPlayer(int turn){
+        return (turn == WHITE_TURN) ? Player.WHITE : Player.BLACK;
+    }
 }
