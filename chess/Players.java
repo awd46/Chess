@@ -1,14 +1,14 @@
 package chess;
 
 
-public class Player {
-    public static final Player WHITE = new Player('W');
-    public static final Player BLACK = new Player('B');
+public class Players {
+    public static final Players WHITE = new Players('W');
+    public static final Players BLACK = new Players('B');
 
     private char teamColor;
     private boolean turn;
 
-    private Player(char teamColor){
+    private Players(char teamColor){
         this.teamColor = teamColor;
     }
     public char getColor(){
