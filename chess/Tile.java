@@ -17,6 +17,10 @@ public abstract class Tile {
         return piece != null;
     }
 
+    public boolean isEmpty(){
+        return piece == null;
+    }
+
     public Piece getPiece(){
         return piece;
     }
