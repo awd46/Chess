@@ -12,5 +12,8 @@ public class Player {
     public char getColor(){
         return teamColor;
     }
+    public int getDirection(){
+        return (teamColor == 'W') ? 2 : -1;
+    }
     
 }

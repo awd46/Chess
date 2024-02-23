@@ -16,5 +16,16 @@ public class Coordinates {
 		int destSquare = parseSquare(moveParts[1]);
 		return new int[]{sourceSqure, destSquare};
     }
-    
+	public static String parsePromotionPiece(String move){
+		if(move.length() > 5 && Character.isLetter(move.charAt(5))){
+			return move.substring(5);
+		}
+		return null;
+	}
+	public static boolean isResignMove(String move){
+		return move.trim().equalsIgnoreCase("resign");
+	}
+	public static boolean isDrawRequest(String move){
+		return move.trim().toLowerCase().endsWith("draw?");
+	} 
 }

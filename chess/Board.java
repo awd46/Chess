@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class Board {
     private final Tile[][] tiles;
     private final Player whitePlayer;
@@ -50,13 +53,12 @@ public class Board {
         }
     }
 
-    public void makeMove(int sourceTileNumber, int destinationTileNumber){
+    public void makeMove(int sourceTileNumber, int destinationTileNumber, String move){
         Tile sourceTile = getTile(sourceTileNumber);
         Tile destinationTile = getTile(destinationTileNumber);
         Piece piece = sourceTile.getPiece();
         //handling castling
         if(piece instanceof King && isCastlingMove(sourceTile, destinationTile)){
-            int sourceFile = (sourceTileNumber - 1) % 8;
             int destinationFile = (destinationTileNumber - 1) % 8;
             int rank = (sourceTileNumber - 1) / 8;
             //move the King
@@ -77,29 +79,46 @@ public class Board {
             rookDestinationTile.setPiece(rook);
             rook.setTileCoordinate(rookDestinationTile.getTileNumber());
         }else{
-                //update source tile to be empty
+            //update source tile to be empty
             sourceTile.clearPiece();
             //set destination tile with the moved piece
             destinationTile.setPiece(piece);
             //update the pieces tile coordinate to reflect its new position
             piece.setTileCoordinate(destinationTileNumber);
-        }
         //handling en passant
-        if(){
-
+            if(isEnPassantMove(sourceTile, destinationTile)){
+                int capturedPawnTileNumber = destinationTileNumber + (piece.getColor().getDirection() * -8);
+                Tile capturedPawnTile = getTile(capturedPawnTileNumber);
+                capturedPawnTile.clearPiece();
         }
+
         //handling pawn promotion
-        if(){
-
+        if(piece instanceof Pawn){
+            int destinationRank = (destinationTileNumber - 1) / 8 + 1;
+            if(destinationRank == 8 || destinationRank == 1){
+                String promotionPiece = Coordinates.parsePromotionPiece(move);
+                if(promotionPiece != null){
+                    switch(promotionPiece.toLowerCase()){
+                        case "q":
+                            destinationTile.setPiece(new Queen(destinationTileNumber, piece.getColor()));
+                            break;
+                        case "r":
+                            destinationTile.setPiece(new Rook(destinationTileNumber, piece.getColor()));
+                            break;
+                        case "n":
+                            destinationTile.setPiece(new Knight(destinationTileNumber, piece.getColor()));
+                            break;
+                        case "b":
+                            destinationTile.setPiece(new Bishop(destinationTileNumber, piece.getColor()));
+                            break;
+                        default:
+                            destinationTile.setPiece(new Queen(destinationTileNumber, piece.getColor()));
+                    }
+                }
+            }
         }
-
-        //update source tile to be empty
-        sourceTile.clearPiece();
-        //set destination tile with the moved piece
-        destinationTile.setPiece(piece);
-        //update the pieces tile coordinate to reflect its new position
-        piece.setTileCoordinate(destinationTileNumber);
     }
+}
 
     public Tile getTile(int tileNumber){
         //convert tileNumber to row and colum indices
@@ -146,5 +165,88 @@ public class Board {
             return false;
         }
         return true;
+    }
+
+    private boolean isEnPassantMove(Tile sourceTile, Tile destinationTile){
+        Piece piece = sourceTile.getPiece();
+        if(piece instanceof Pawn){
+            int sourceRank = sourceTile.getTileNumber() / 8;
+            int destinationRank = destinationTile.getTileNumber() / 8;
+            int sourceFile = sourceTile.getTileNumber() % 8;
+            int destinationFile = destinationTile.getTileNumber() % 8;
+            if(Math.abs(destinationFile - sourceFile) == 1 && Math.abs(destinationRank - sourceRank) == 1 && destinationTile.isEmpty()){
+                Tile adjacentTile = getTile(destinationTile.getTileNumber() - (8 * piece.getColor().getDirection()));
+                Piece adjacentPiece = adjacentTile.getPiece();
+                return adjacentPiece instanceof Pawn && adjacentPiece.getColor() != piece.getColor();
+            }
+        }
+        return false;
+    }
+
+    //begin working on checking for check and checkmate
+    public boolean isInCheck(Player player){
+        int playerKingPosition = findKing(player);
+        List<Piece> opponentPieces = getAllPieces(getOpponent(player));
+        for(Piece piece : opponentPieces){
+            List<Move> legalMoves = piece.calculateLegalMoves(this);
+            for(Move move : legalMoves){
+                if(move.getdestinationTile() == playerKingPosition){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean isInCheckMate(Player player){
+        if(!isInCheck(player)){
+            return false;
+        }
+        List<Move> legalMoves = getAllLegalMoves(player);
+        for(Move move : legalMoves){
+            Board newBoard = this.clone();
+            newBoard.makeMove(move.getcurrentTile(), move.getdestinationTile(), null);
+            if(!newBoard.isInCheck(player)){
+                return false;
+            }
+        }
+        return true;
+    }
+    private int findKing(Player player){
+        List<Piece> pieces = getAllPieces(player);
+        for(Piece piece : pieces){
+            if(piece instanceof King){
+                return piece.getTileCoordinate();
+            }
+        }
+        return -1;
+    }
+    private List<Piece> getAllPieces(Player player){
+        List<Piece> pieces = new ArrayList<>();
+        for(Tile[] row : tiles){
+            for(Tile tile : row){
+                if(tile.isOccupied() && tile.getPiece().getColor() == player){
+                    pieces.add(tile.getPiece());
+                }
+            }
+        }
+        return pieces;
+    }
+    private List<Move> getAllLegalMoves(Player player){
+        List<Move> legalMoves = new ArrayList<>();
+        List<Piece> pieces = getAllPieces(player);
+        for(Piece piece : pieces){
+            legalMoves.addAll(piece.calculateLegalMoves(this));
+        }
+        return legalMoves;
+    }
+    private Player getOpponent(Player player){
+        return (player == whitePlayer) ? blackPlayer : whitePlayer;
+    }
+    protected Board clone(){
+        Board newBoard = new Board(whitePlayer, blackPlayer);
+        for(int i = 0; i < 8; i++){
+            System.arraycopy(tiles[i], 0, newBoard.tiles[i], 0, 8);
+        }
+        return newBoard;
     }
 }
