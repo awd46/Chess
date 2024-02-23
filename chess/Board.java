@@ -21,28 +21,28 @@ public class Board {
 
     private void initializeBoard(){
         //method sets pieces in their starting positions
-        tiles[0][0] = new Tile.OccupiedTile(1, new Rook(1, whitePlayer));
-        tiles[0][1] = new Tile.OccupiedTile(1, new Knight(2, whitePlayer));
-        tiles[0][2] = new Tile.OccupiedTile(1, new Bishop(3, whitePlayer));
-        tiles[0][3] = new Tile.OccupiedTile(1, new Queen(4, whitePlayer));
-        tiles[0][4] = new Tile.OccupiedTile(1, new King(5, whitePlayer));
-        tiles[0][5] = new Tile.OccupiedTile(1, new Bishop(6, whitePlayer));
-        tiles[0][6] = new Tile.OccupiedTile(1, new Knight(7, whitePlayer));
-        tiles[0][7] = new Tile.OccupiedTile(1, new Rook(8, whitePlayer));
+        tiles[0][0] = new Tile.OccupiedTile(1, new Rook(1, blackPlayer));
+        tiles[0][1] = new Tile.OccupiedTile(1, new Knight(2, blackPlayer));
+        tiles[0][2] = new Tile.OccupiedTile(1, new Bishop(3, blackPlayer));
+        tiles[0][3] = new Tile.OccupiedTile(1, new Queen(4, blackPlayer));
+        tiles[0][4] = new Tile.OccupiedTile(1, new King(5, blackPlayer));
+        tiles[0][5] = new Tile.OccupiedTile(1, new Bishop(6, blackPlayer));
+        tiles[0][6] = new Tile.OccupiedTile(1, new Knight(7, blackPlayer));
+        tiles[0][7] = new Tile.OccupiedTile(1, new Rook(8, blackPlayer));
         for(int file = 0; file < 8; file++){
-            tiles[1][file] = new Tile.OccupiedTile((1 * 8) + (file + 1), new Pawn((1 * 8) + (file + 1), whitePlayer));
+            tiles[1][file] = new Tile.OccupiedTile((1 * 8) + (file + 1), new Pawn((1 * 8) + (file + 1), blackPlayer));
             //place the rest of white pieces
         }
-        tiles[7][0] = new Tile.OccupiedTile(1, new Rook(57, blackPlayer));
-        tiles[7][1] = new Tile.OccupiedTile(1, new Knight(58, blackPlayer));
-        tiles[7][2] = new Tile.OccupiedTile(1, new Bishop(59, blackPlayer));
-        tiles[7][3] = new Tile.OccupiedTile(1, new Queen(60, blackPlayer));
-        tiles[7][4] = new Tile.OccupiedTile(1, new King(61, blackPlayer));
-        tiles[7][5] = new Tile.OccupiedTile(1, new Bishop(62, blackPlayer));
-        tiles[7][6] = new Tile.OccupiedTile(1, new Knight(63, blackPlayer));
-        tiles[7][7] = new Tile.OccupiedTile(1, new Rook(64, blackPlayer));
+        tiles[7][0] = new Tile.OccupiedTile(1, new Rook(57, whitePlayer));
+        tiles[7][1] = new Tile.OccupiedTile(1, new Knight(58, whitePlayer));
+        tiles[7][2] = new Tile.OccupiedTile(1, new Bishop(59, whitePlayer));
+        tiles[7][3] = new Tile.OccupiedTile(1, new Queen(60, whitePlayer));
+        tiles[7][4] = new Tile.OccupiedTile(1, new King(61, whitePlayer));
+        tiles[7][5] = new Tile.OccupiedTile(1, new Bishop(62, whitePlayer));
+        tiles[7][6] = new Tile.OccupiedTile(1, new Knight(63, whitePlayer));
+        tiles[7][7] = new Tile.OccupiedTile(1, new Rook(64, whitePlayer));
         for(int file = 0; file < 8; file++){
-            tiles[6][file] = new Tile.OccupiedTile((6 * 8) + (file + 1), new Pawn((6 * 8) + (file + 1), blackPlayer));
+            tiles[6][file] = new Tile.OccupiedTile((6 * 8) + (file + 1), new Pawn((6 * 8) + (file + 1), whitePlayer));
             //place the rest of the black pieces
         }
         //fill in empty tiles

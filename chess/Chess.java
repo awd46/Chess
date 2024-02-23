@@ -57,12 +57,16 @@ public class Chess {
 	public static ReturnPlay play(String move) {
 		ReturnPlay returnPlay = new ReturnPlay();
 		Players currentPlayer = getCurrentPlayer(turn);
+		System.out.println("Move : " + move);
 		// Parse the move
 		int[] parsedMove = Coordinates.parseMove(move);
 		int sourceSquare = parsedMove[0];
 		int destinationSquare = parsedMove[1];
+		System.out.println("Source square : " + sourceSquare);
+		System.out.println("dest square : " + destinationSquare);
 		// Get the tile object for the source square
 		Tile sourceTile = board.getTile(sourceSquare);
+		System.out.println("Piece on source tile : " + sourceTile.getPiece());
 		// Check if the move is legal
 		Piece piece = sourceTile.getPiece();
 		if (piece == null || piece.getColor() != currentPlayer) {
