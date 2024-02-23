@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public abstract class Piece {
 
     protected int tileCoordinate;
-    protected final Player color;
+    protected final Players color;
     private boolean hasMoved;
 
     public boolean hasMoved(){
@@ -17,7 +17,7 @@ public abstract class Piece {
         this.hasMoved = hasMoved;
     }
     
-    public Piece(int tileCoordinate, Player color){
+    public Piece(int tileCoordinate, Players color){
         this.tileCoordinate = tileCoordinate;
         this.color = color;
     }
@@ -26,7 +26,7 @@ public abstract class Piece {
         return tileCoordinate;
     }
 
-    public Player getColor(){
+    public Players getColor(){
         return color;
     }
 
@@ -40,19 +40,19 @@ public abstract class Piece {
 
 class Pawn extends Piece{
 
-    public Pawn(int tileCoordinate, Player color) {
+    public Pawn(int tileCoordinate, Players color) {
         super(tileCoordinate, color);
     }
     public List<Move> calculateLegalMoves(Board board){
         List<Move> legalMoves = new ArrayList<>();
         int currentTile = this.tileCoordinate;
-        int direction = this.color == Player.WHITE ? 1 : -1;
+        int direction = this.color == Players.WHITE ? 1 : -1;
         //check one square ahead
         int destinationTile = currentTile + (8 * direction);
         if(!board.getTile(destinationTile).isOccupied()){
             legalMoves.add(new Move(currentTile, destinationTile));
             //check two squares ahead if the pawn is on it's starting rank
-            if((this.color == Player.WHITE && currentTile >= 9 && currentTile <= 16) || (this.color == Player.BLACK && currentTile >= 49 && currentTile <= 56)){
+            if((this.color == Players.WHITE && currentTile >= 9 && currentTile <= 16) || (this.color == Players.BLACK && currentTile >= 49 && currentTile <= 56)){
                 destinationTile = currentTile + (16 * direction);
                 if(!board.getTile(destinationTile).isOccupied()){
                     legalMoves.add(new Move(currentTile, destinationTile));
@@ -60,7 +60,7 @@ class Pawn extends Piece{
             }
         }
         //check diagonals for captures
-        int[] candidateOffsets = (this.color == Player.WHITE) ? new int[] {-7, -9} : new int[] {7, 9};
+        int[] candidateOffsets = (this.color == Players.WHITE) ? new int[] {-7, -9} : new int[] {7, 9};
         for(int offset : candidateOffsets){
             destinationTile = currentTile + (offset * direction);
             if(Board.isValidTile(destinationTile)){
@@ -79,7 +79,7 @@ class Pawn extends Piece{
 
 class Knight extends Piece{
 
-    Knight(int tileCoordinate, Player color) {
+    Knight(int tileCoordinate, Players color) {
         super(tileCoordinate, color);
     }
     public List<Move> calculateLegalMoves(Board board){
@@ -101,7 +101,7 @@ class Knight extends Piece{
 
 class Rook extends Piece{
 
-    Rook(int tileCoordinate, Player color) {
+    Rook(int tileCoordinate, Players color) {
         super(tileCoordinate, color);
     }
     public List<Move> calculateLegalMoves(Board board){
@@ -130,7 +130,7 @@ class Rook extends Piece{
 
 class Bishop extends Piece{
 
-    Bishop(int tileCoordinate, Player color) {
+    Bishop(int tileCoordinate, Players color) {
         super(tileCoordinate, color);
     }
     public List<Move> calculateLegalMoves(Board board){
@@ -159,7 +159,7 @@ class Bishop extends Piece{
 
 class King extends Piece{
 
-    King(int tileCoordinate, Player color) {
+    King(int tileCoordinate, Players color) {
         super(tileCoordinate, color);
     }
     public List<Move> calculateLegalMoves(Board board){
@@ -181,7 +181,7 @@ class King extends Piece{
 
 class Queen extends Piece{
 
-    Queen(int tileCoordinate, Player color) {
+    Queen(int tileCoordinate, Players color) {
         super(tileCoordinate, color);
     }
     public List<Move> calculateLegalMoves(Board board){

@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class Board {
     private final Tile[][] tiles;
-    private final Player whitePlayer;
-    private final Player blackPlayer;
+    private final Players whitePlayer;
+    private final Players blackPlayer;
 
-    public Board(Player whitePlayer, Player blackPlayer){
+    public Board(Players whitePlayer, Players blackPlayer){
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         tiles = new Tile[8][8];
@@ -184,7 +184,7 @@ public class Board {
     }
 
     //begin working on checking for check and checkmate
-    public boolean isInCheck(Player player){
+    public boolean isInCheck(Players player){
         int playerKingPosition = findKing(player);
         List<Piece> opponentPieces = getAllPieces(getOpponent(player));
         for(Piece piece : opponentPieces){
@@ -197,7 +197,7 @@ public class Board {
         }
         return false;
     }
-    public boolean isInCheckMate(Player player){
+    public boolean isInCheckMate(Players player){
         if(!isInCheck(player)){
             return false;
         }
@@ -211,7 +211,7 @@ public class Board {
         }
         return true;
     }
-    private int findKing(Player player){
+    private int findKing(Players player){
         List<Piece> pieces = getAllPieces(player);
         for(Piece piece : pieces){
             if(piece instanceof King){
@@ -220,7 +220,7 @@ public class Board {
         }
         return -1;
     }
-    private List<Piece> getAllPieces(Player player){
+    private List<Piece> getAllPieces(Players player){
         List<Piece> pieces = new ArrayList<>();
         for(Tile[] row : tiles){
             for(Tile tile : row){
@@ -231,7 +231,7 @@ public class Board {
         }
         return pieces;
     }
-    private List<Move> getAllLegalMoves(Player player){
+    private List<Move> getAllLegalMoves(Players player){
         List<Move> legalMoves = new ArrayList<>();
         List<Piece> pieces = getAllPieces(player);
         for(Piece piece : pieces){
@@ -239,7 +239,7 @@ public class Board {
         }
         return legalMoves;
     }
-    private Player getOpponent(Player player){
+    private Players getOpponent(Players player){
         return (player == whitePlayer) ? blackPlayer : whitePlayer;
     }
     protected Board clone(){

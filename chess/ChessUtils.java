@@ -3,7 +3,7 @@ package chess;
 import java.util.ArrayList;
 
 public class ChessUtils {
-    public static ReturnPiece.PieceType getPieceType(Piece piece, Player player){
+    public static ReturnPiece.PieceType getPieceType(Piece piece, Players player){
         if(piece instanceof Pawn){
             return piece.getColor() == player ? ReturnPiece.PieceType.WP : ReturnPiece.PieceType.BP;
         }else if(piece instanceof Rook){
@@ -20,7 +20,7 @@ public class ChessUtils {
         return null;
     }
 
-    public static ArrayList<ReturnPiece> getPiecesOnBoard(Board board, Player player){
+    public static ArrayList<ReturnPiece> getPiecesOnBoard(Board board, Players player){
         ArrayList<ReturnPiece> pieces = new ArrayList<>();
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
