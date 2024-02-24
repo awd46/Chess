@@ -46,13 +46,13 @@ class Pawn extends Piece{
     public List<Move> calculateLegalMoves(Board board){
         List<Move> legalMoves = new ArrayList<>();
         int currentTile = this.tileCoordinate;
-        int direction = this.color == Players.WHITE ? 1 : -1;
+        int direction = this.color == Players.BLACK ? 1 : -1;
         //check one square ahead
         int destinationTile = currentTile + (8 * direction);
         if(!board.getTile(destinationTile).isOccupied()){
             legalMoves.add(new Move(currentTile, destinationTile));
             //check two squares ahead if the pawn is on it's starting rank
-            if((this.color == Players.WHITE && currentTile >= 9 && currentTile <= 16) || (this.color == Players.BLACK && currentTile >= 49 && currentTile <= 56)){
+            if((this.color == Players.BLACK && currentTile >= 9 && currentTile <= 16) || (this.color == Players.WHITE && currentTile >= 49 && currentTile <= 56)){
                 destinationTile = currentTile + (16 * direction);
                 if(!board.getTile(destinationTile).isOccupied()){
                     legalMoves.add(new Move(currentTile, destinationTile));
@@ -60,7 +60,7 @@ class Pawn extends Piece{
             }
         }
         //check diagonals for captures
-        int[] candidateOffsets = (this.color == Players.WHITE) ? new int[] {-7, -9} : new int[] {7, 9};
+        int[] candidateOffsets = (this.color == Players.BLACK) ? new int[] {-7, -9} : new int[] {7, 9};
         for(int offset : candidateOffsets){
             destinationTile = currentTile + (offset * direction);
             if(Board.isValidTile(destinationTile)){
