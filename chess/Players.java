@@ -23,5 +23,8 @@ public class Players {
     public void setTurn(boolean turn){
         this.turn = turn;
     }
+    public String toString(){
+        return (teamColor == 'W') ? "White" : "Black";
+    }
     
 }

@@ -50,7 +50,7 @@ public class Chess {
 	 *         the contents of the returned ReturnPlay instance.
 	 */
 	private static final int WHITE_TURN = 0;
-	private static final int BLACK_TURN = 0;
+	private static final int BLACK_TURN = 1;
 	private static int turn = WHITE_TURN;
 	private static Board board;
 
