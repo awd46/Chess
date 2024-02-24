@@ -69,6 +69,7 @@ public class Chess {
 		System.out.println("Piece on source tile : " + sourceTile.getPiece());
 		// Check if the move is legal
 		Piece piece = sourceTile.getPiece();
+		System.out.println("Piece color : " + piece.getColor().toString());
 		if (piece == null || piece.getColor() != currentPlayer) {
 			returnPlay.piecesOnBoard = ChessUtils.getPiecesOnBoard(board, currentPlayer);
 			returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;

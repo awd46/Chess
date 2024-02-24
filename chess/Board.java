@@ -57,6 +57,22 @@ public class Board {
         Tile sourceTile = getTile(sourceTileNumber);
         Tile destinationTile = getTile(destinationTileNumber);
         Piece piece = sourceTile.getPiece();
+
+        //new stuff
+        List<Move> legalMoves = piece.calculateLegalMoves(this);
+        boolean isLegalMove = false;
+        for(Move legalMove : legalMoves){
+            if(legalMove.getdestinationTile() == destinationTileNumber){
+                isLegalMove = true;
+                break;
+            }
+        }
+        if(isLegalMove){
+            sourceTile.clearPiece();
+            destinationTile.setPiece(piece);
+            piece.setTileCoordinate(destinationTileNumber);
+        }
+
         //handling castling
         if(piece instanceof King && isCastlingMove(sourceTile, destinationTile)){
             int destinationFile = (destinationTileNumber - 1) % 8;
