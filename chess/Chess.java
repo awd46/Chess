@@ -66,11 +66,20 @@ public class Chess {
 		System.out.println("dest square : " + destinationSquare);
 		// Get the tile object for the source square
 		Tile sourceTile = board.getTile(sourceSquare);
+		System.out.println("source tile is occupied" + sourceTile.isOccupied());
 		System.out.println("Piece on source tile : " + sourceTile.getPiece());
 		// Check if the move is legal
 		Piece piece = sourceTile.getPiece();
-		System.out.println("Piece color : " + piece.getColor().toString());
-		if (piece == null || piece.getColor() != currentPlayer) {
+		System.out.println("Piece color : " + (piece != null ? piece.getColor().toString() : "null"));
+		Piece piecetwo = sourceTile.getPiece();
+		if (piecetwo == null){
+			System.out.println("Piece is null");
+			returnPlay.piecesOnBoard = ChessUtils.getPiecesOnBoard(board, currentPlayer);
+			returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
+			return returnPlay;
+		}
+		if(piece.getColor() != currentPlayer){
+			System.out.println("invalid color");
 			returnPlay.piecesOnBoard = ChessUtils.getPiecesOnBoard(board, currentPlayer);
 			returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
 			return returnPlay;
@@ -85,6 +94,7 @@ public class Chess {
 			}
 		}
 		if (!isValidMove) {
+			System.out.println("Invalid move");
 			returnPlay.piecesOnBoard = ChessUtils.getPiecesOnBoard(board, currentPlayer);
 			returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
 			return returnPlay;

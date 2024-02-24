@@ -22,25 +22,25 @@ public class Board {
     private void initializeBoard(){
         //method sets pieces in their starting positions
         tiles[0][0] = new Tile.OccupiedTile(1, new Rook(1, blackPlayer));
-        tiles[0][1] = new Tile.OccupiedTile(1, new Knight(2, blackPlayer));
-        tiles[0][2] = new Tile.OccupiedTile(1, new Bishop(3, blackPlayer));
-        tiles[0][3] = new Tile.OccupiedTile(1, new Queen(4, blackPlayer));
-        tiles[0][4] = new Tile.OccupiedTile(1, new King(5, blackPlayer));
-        tiles[0][5] = new Tile.OccupiedTile(1, new Bishop(6, blackPlayer));
-        tiles[0][6] = new Tile.OccupiedTile(1, new Knight(7, blackPlayer));
-        tiles[0][7] = new Tile.OccupiedTile(1, new Rook(8, blackPlayer));
+        tiles[0][1] = new Tile.OccupiedTile(2, new Knight(2, blackPlayer));
+        tiles[0][2] = new Tile.OccupiedTile(3, new Bishop(3, blackPlayer));
+        tiles[0][3] = new Tile.OccupiedTile(4, new Queen(4, blackPlayer));
+        tiles[0][4] = new Tile.OccupiedTile(5, new King(5, blackPlayer));
+        tiles[0][5] = new Tile.OccupiedTile(6, new Bishop(6, blackPlayer));
+        tiles[0][6] = new Tile.OccupiedTile(7, new Knight(7, blackPlayer));
+        tiles[0][7] = new Tile.OccupiedTile(8, new Rook(8, blackPlayer));
         for(int file = 0; file < 8; file++){
             tiles[1][file] = new Tile.OccupiedTile((1 * 8) + (file + 1), new Pawn((1 * 8) + (file + 1), blackPlayer));
             //place the rest of white pieces
         }
-        tiles[7][0] = new Tile.OccupiedTile(1, new Rook(57, whitePlayer));
-        tiles[7][1] = new Tile.OccupiedTile(1, new Knight(58, whitePlayer));
-        tiles[7][2] = new Tile.OccupiedTile(1, new Bishop(59, whitePlayer));
-        tiles[7][3] = new Tile.OccupiedTile(1, new Queen(60, whitePlayer));
-        tiles[7][4] = new Tile.OccupiedTile(1, new King(61, whitePlayer));
-        tiles[7][5] = new Tile.OccupiedTile(1, new Bishop(62, whitePlayer));
-        tiles[7][6] = new Tile.OccupiedTile(1, new Knight(63, whitePlayer));
-        tiles[7][7] = new Tile.OccupiedTile(1, new Rook(64, whitePlayer));
+        tiles[7][0] = new Tile.OccupiedTile(57, new Rook(57, whitePlayer));
+        tiles[7][1] = new Tile.OccupiedTile(58, new Knight(58, whitePlayer));
+        tiles[7][2] = new Tile.OccupiedTile(59, new Bishop(59, whitePlayer));
+        tiles[7][3] = new Tile.OccupiedTile(60, new Queen(60, whitePlayer));
+        tiles[7][4] = new Tile.OccupiedTile(61, new King(61, whitePlayer));
+        tiles[7][5] = new Tile.OccupiedTile(62, new Bishop(62, whitePlayer));
+        tiles[7][6] = new Tile.OccupiedTile(63, new Knight(63, whitePlayer));
+        tiles[7][7] = new Tile.OccupiedTile(64, new Rook(64, whitePlayer));
         for(int file = 0; file < 8; file++){
             tiles[6][file] = new Tile.OccupiedTile((6 * 8) + (file + 1), new Pawn((6 * 8) + (file + 1), whitePlayer));
             //place the rest of the black pieces
@@ -57,7 +57,9 @@ public class Board {
         Tile sourceTile = getTile(sourceTileNumber);
         Tile destinationTile = getTile(destinationTileNumber);
         Piece piece = sourceTile.getPiece();
-
+        if(piece == null){
+            return;
+        }
         //new stuff
         List<Move> legalMoves = piece.calculateLegalMoves(this);
         boolean isLegalMove = false;
@@ -74,7 +76,7 @@ public class Board {
         }
 
         //handling castling
-        if(piece instanceof King && isCastlingMove(sourceTile, destinationTile)){
+        else if(piece instanceof King && isCastlingMove(sourceTile, destinationTile)){
             int destinationFile = (destinationTileNumber - 1) % 8;
             int rank = (sourceTileNumber - 1) / 8;
             //move the King
@@ -94,22 +96,15 @@ public class Board {
             rookSourceTile.clearPiece();
             rookDestinationTile.setPiece(rook);
             rook.setTileCoordinate(rookDestinationTile.getTileNumber());
-        }else{
-            //update source tile to be empty
-            sourceTile.clearPiece();
-            //set destination tile with the moved piece
-            destinationTile.setPiece(piece);
-            //update the pieces tile coordinate to reflect its new position
-            piece.setTileCoordinate(destinationTileNumber);
-        //handling en passant
-            if(isEnPassantMove(sourceTile, destinationTile)){
+        }
+            else if(isEnPassantMove(sourceTile, destinationTile)){
                 int capturedPawnTileNumber = destinationTileNumber + (piece.getColor().getDirection() * -8);
                 Tile capturedPawnTile = getTile(capturedPawnTileNumber);
                 capturedPawnTile.clearPiece();
         }
 
         //handling pawn promotion
-        if(piece instanceof Pawn){
+        else if(piece instanceof Pawn){
             int destinationRank = (destinationTileNumber - 1) / 8 + 1;
             if(destinationRank == 8 || destinationRank == 1){
                 String promotionPiece = Coordinates.parsePromotionPiece(move);
@@ -132,9 +127,10 @@ public class Board {
                     }
                 }
             }
+        }else{
+            return;
         }
     }
-}
 
     public Tile getTile(int tileNumber){
         //convert tileNumber to row and colum indices

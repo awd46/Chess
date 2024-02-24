@@ -3,8 +3,8 @@ package chess;
 
 public abstract class Tile {
 
-    protected final int tileNumber;
-    private Piece piece;
+    protected int tileNumber;
+    protected Piece piece;
 
     Tile(int tileNumber){
         this.tileNumber = tileNumber;
@@ -27,10 +27,23 @@ public abstract class Tile {
     }
 
     public void setPiece(Piece piece){
+        System.out.println("setting piece on dest tile: " + piece);
+        this.piece = piece;
+        if(this instanceof EmptyTile){
+            OccupiedTile occupiedTile = new OccupiedTile(this.tileNumber, piece);
+            this.tileNumber = occupiedTile.tileNumber;
+            this.piece = occupiedTile.piece;
+        }
         this.piece = piece;
     }
 
     public void clearPiece(){
+        System.out.println("clearing piece from this tile: " + tileNumber);
+        this.piece = null;
+        if(this instanceof OccupiedTile){
+            EmptyTile emptyTile = new EmptyTile(this.tileNumber);
+            this.tileNumber = emptyTile.tileNumber;
+        }
         this.piece = null;
     }
 
