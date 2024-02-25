@@ -79,6 +79,7 @@ public class Board {
         }else{
             return;
         }
+    }
 
         /* 
         //handling castling
@@ -135,8 +136,8 @@ public class Board {
             }
         }else{
             return;
-        }*/
-    }
+        }
+    }*/
     
     public Tile getTile(int tileNumber){
         //convert tileNumber to row and colum indices
