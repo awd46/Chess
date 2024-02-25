@@ -19,36 +19,37 @@ public class Board {
         return tileNumber >= 1 && tileNumber <= 64;
     }
 
-    private void initializeBoard(){
-        //method sets pieces in their starting positions
-        tiles[0][0] = new Tile.OccupiedTile(1, new Rook(1, blackPlayer));
-        tiles[0][1] = new Tile.OccupiedTile(2, new Knight(2, blackPlayer));
-        tiles[0][2] = new Tile.OccupiedTile(3, new Bishop(3, blackPlayer));
-        tiles[0][3] = new Tile.OccupiedTile(4, new Queen(4, blackPlayer));
-        tiles[0][4] = new Tile.OccupiedTile(5, new King(5, blackPlayer));
-        tiles[0][5] = new Tile.OccupiedTile(6, new Bishop(6, blackPlayer));
-        tiles[0][6] = new Tile.OccupiedTile(7, new Knight(7, blackPlayer));
-        tiles[0][7] = new Tile.OccupiedTile(8, new Rook(8, blackPlayer));
-        for(int file = 0; file < 8; file++){
-            tiles[1][file] = new Tile.OccupiedTile((1 * 8) + (file + 1), new Pawn((1 * 8) + (file + 1), blackPlayer));
-            //place the rest of white pieces
+    private void initializeBoard() {
+        // Initialize black pieces
+        tiles[0][0] = new Tile(1, new Rook(1, blackPlayer));
+        tiles[0][1] = new Tile(2, new Knight(2, blackPlayer));
+        tiles[0][2] = new Tile(3, new Bishop(3, blackPlayer));
+        tiles[0][3] = new Tile(4, new Queen(4, blackPlayer));
+        tiles[0][4] = new Tile(5, new King(5, blackPlayer));
+        tiles[0][5] = new Tile(6, new Bishop(6, blackPlayer));
+        tiles[0][6] = new Tile(7, new Knight(7, blackPlayer));
+        tiles[0][7] = new Tile(8, new Rook(8, blackPlayer));
+        for (int file = 0; file < 8; file++) {
+            tiles[1][file] = new Tile((1 * 8) + (file + 1), new Pawn((1 * 8) + (file + 1), blackPlayer));
         }
-        tiles[7][0] = new Tile.OccupiedTile(57, new Rook(57, whitePlayer));
-        tiles[7][1] = new Tile.OccupiedTile(58, new Knight(58, whitePlayer));
-        tiles[7][2] = new Tile.OccupiedTile(59, new Bishop(59, whitePlayer));
-        tiles[7][3] = new Tile.OccupiedTile(60, new Queen(60, whitePlayer));
-        tiles[7][4] = new Tile.OccupiedTile(61, new King(61, whitePlayer));
-        tiles[7][5] = new Tile.OccupiedTile(62, new Bishop(62, whitePlayer));
-        tiles[7][6] = new Tile.OccupiedTile(63, new Knight(63, whitePlayer));
-        tiles[7][7] = new Tile.OccupiedTile(64, new Rook(64, whitePlayer));
-        for(int file = 0; file < 8; file++){
-            tiles[6][file] = new Tile.OccupiedTile((6 * 8) + (file + 1), new Pawn((6 * 8) + (file + 1), whitePlayer));
-            //place the rest of the black pieces
+
+        // Initialize white pieces
+        tiles[7][0] = new Tile(57, new Rook(57, whitePlayer));
+        tiles[7][1] = new Tile(58, new Knight(58, whitePlayer));
+        tiles[7][2] = new Tile(59, new Bishop(59, whitePlayer));
+        tiles[7][3] = new Tile(60, new Queen(60, whitePlayer));
+        tiles[7][4] = new Tile(61, new King(61, whitePlayer));
+        tiles[7][5] = new Tile(62, new Bishop(62, whitePlayer));
+        tiles[7][6] = new Tile(63, new Knight(63, whitePlayer));
+        tiles[7][7] = new Tile(64, new Rook(64, whitePlayer));
+        for (int file = 0; file < 8; file++) {
+            tiles[6][file] = new Tile((6 * 8) + (file + 1), new Pawn((6 * 8) + (file + 1), whitePlayer));
         }
-        //fill in empty tiles
-        for(int rank = 2; rank < 6; rank++){
-            for(int file = 0; file < 8; file++){
-                tiles[rank][file] = new Tile.OccupiedTile((rank * 8) + (file + 1), null);
+
+        // Initialize empty tiles for the middle of the board
+        for (int rank = 2; rank < 6; rank++) {
+            for (int file = 0; file < 8; file++) {
+                tiles[rank][file] = new Tile((rank * 8) + (file + 1), null);
             }
         }
     }
@@ -56,12 +57,6 @@ public class Board {
     public void makeMove(int sourceTileNumber, int destinationTileNumber, String move){
         Tile sourceTile = getTile(sourceTileNumber);
         Tile destinationTile = getTile(destinationTileNumber);
-        //int sourceRow = (sourceTileNumber - 1) / 8;
-        //int sourceCol = (sourceTileNumber - 1) % 8;
-        //int destRow = (destinationTileNumber - 1) / 8;
-        //int destCol = (destinationTileNumber - 1) % 8;
-        //Tile sourceTile = tiles[sourceRow][sourceCol];
-        //Tile destinationTile = tiles[destRow][destCol];
         Piece piece = sourceTile.getPiece();
         if(piece == null){
             return;
@@ -78,16 +73,11 @@ public class Board {
         if(isLegalMove){
             /*if(destinationTile.isOccupied()){
                 destinationTile.clearPiece();
-            }
-            sourceTile.clearPiece();
-                System.out.println("clearing piece from this tile " + sourceTileNumber);
-            destinationTile.setPiece(piece);
-                System.out.println("setting piece on tile :" + destinationTileNumber + piece);
-            piece.setTileCoordinate(destinationTileNumber);
-                System.out.println("pieces tile coordinate updated to : " + destinationTileNumber);*/
+            }*/
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
             piece.setTileCoordinate(destinationTileNumber);
+            this.printBoardState();
         }else{
             return;
         }
@@ -279,5 +269,17 @@ public class Board {
             System.arraycopy(tiles[i], 0, newBoard.tiles[i], 0, 8);
         }
         return newBoard;
+    }
+
+    public void printBoardState() {
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                Tile tile = tiles[i][j];
+                String pieceRepresentation = (tile.isOccupied()) ? tile.getPiece().getClass().getSimpleName().substring(0, 2) + tile.getPiece().getColor().toString().charAt(0) : "##";
+                System.out.print(pieceRepresentation + " ");
+            }
+            System.out.println(8 - i); // Print row number at the end
+        }
+        System.out.println(" a  b  c  d  e  f  g  h");
     }
 }

@@ -1,10 +1,9 @@
 package chess;
 
-
-public abstract class Tile {
+public class Tile {
 
     protected int tileNumber;
-    protected Piece piece;
+    protected Piece piece; // null indicates that the tile is empty
 
     public Tile(int tileNumber, Piece piece){
         this.tileNumber = tileNumber;
@@ -28,45 +27,11 @@ public abstract class Tile {
     }
 
     public void setPiece(Piece piece){
-        //System.out.println("setting piece on dest tile: " + piece);
+        // If piece is null, it effectively clears the tile, making it empty.
         this.piece = piece;
     }
 
     public void clearPiece(){
-        //System.out.println("clearing piece from this tile: " + tileNumber);
-        //Piece removedPiece = this.piece;
-        this.piece = null;
-        //return removedPiece;
-    }
-    
-
-    /*public static final class EmptyTile extends Tile{
-        EmptyTile(final int tileNumber){
-            super(tileNumber);
-        }
-        @Override
-        public boolean isOccupied(){
-            return false;
-        }
-        @Override
-        public Piece getPiece(){
-            return null;
-        }
-    }*/
-    public static final class OccupiedTile extends Tile{
-        private final Piece pieceOnTile;
-
-        OccupiedTile(int tileNumber, Piece pieceOnTile){
-            super(tileNumber, pieceOnTile);
-            this.pieceOnTile = pieceOnTile;
-        }
-        @Override
-        public boolean isOccupied(){
-            return pieceOnTile != null;
-        }
-        @Override
-        public Piece getPiece(){
-            return pieceOnTile;
-        }
+        this.piece = null; // Clearing the piece from the tile, making it empty.
     }
 }
