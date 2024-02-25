@@ -6,8 +6,9 @@ public abstract class Tile {
     protected int tileNumber;
     protected Piece piece;
 
-    public Tile(int tileNumber){
+    public Tile(int tileNumber, Piece piece){
         this.tileNumber = tileNumber;
+        this.piece = piece;
     }
 
     public int getTileNumber(){
@@ -29,14 +30,19 @@ public abstract class Tile {
     public void setPiece(Piece piece){
         System.out.println("setting piece on dest tile: " + piece);
         this.piece = piece;
-        /*if(piece != null){
+        if(piece != null){
             piece.setTileCoordinate(this.tileNumber);
-        }*/
+        }
     }
 
-    public void clearPiece(){
+    public Piece clearPiece(){
         System.out.println("clearing piece from this tile: " + tileNumber);
+        Piece removedPiece = this.piece;
         this.piece = null;
+        if(removedPiece != null){
+            removedPiece.setTileCoordinate(-1);
+        }
+        return removedPiece;
     }
 
     /*public static final class EmptyTile extends Tile{
@@ -56,7 +62,7 @@ public abstract class Tile {
         private final Piece pieceOnTile;
 
         OccupiedTile(int tileNumber, Piece pieceOnTile){
-            super(tileNumber);
+            super(tileNumber, pieceOnTile);
             this.pieceOnTile = pieceOnTile;
         }
         @Override
