@@ -48,7 +48,7 @@ public class Board {
         //fill in empty tiles
         for(int rank = 2; rank < 6; rank++){
             for(int file = 0; file < 8; file++){
-                tiles[rank][file] = new Tile.EmptyTile((rank * 8) + (file + 1));
+                tiles[rank][file] = new Tile.OccupiedTile((rank * 8) + (file + 1), null);
             }
         }
     }
@@ -70,9 +70,13 @@ public class Board {
             }
         }
         if(isLegalMove){
+            Piece capturedPiece = destinationTile.getPiece();
+            if(capturedPiece != null){
+                destinationTile.clearPiece();
+            }
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
-            piece.setTileCoordinate(destinationTileNumber);
+            //piece.setTileCoordinate(destinationTileNumber);
         }
 
         //handling castling
@@ -82,7 +86,7 @@ public class Board {
             //move the King
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
-            piece.setTileCoordinate(destinationTileNumber);
+            //piece.setTileCoordinate(destinationTileNumber);
             //move the Rook
             Tile rookSourceTile, rookDestinationTile;
             if(destinationFile == 6){
@@ -95,7 +99,7 @@ public class Board {
             Piece rook = rookSourceTile.getPiece();
             rookSourceTile.clearPiece();
             rookDestinationTile.setPiece(rook);
-            rook.setTileCoordinate(rookDestinationTile.getTileNumber());
+            //rook.setTileCoordinate(rookDestinationTile.getTileNumber());
         }
             else if(isEnPassantMove(sourceTile, destinationTile)){
                 int capturedPawnTileNumber = destinationTileNumber + (piece.getColor().getDirection() * -8);

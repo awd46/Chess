@@ -6,7 +6,7 @@ public abstract class Tile {
     protected int tileNumber;
     protected Piece piece;
 
-    Tile(int tileNumber){
+    public Tile(int tileNumber){
         this.tileNumber = tileNumber;
     }
 
@@ -29,25 +29,17 @@ public abstract class Tile {
     public void setPiece(Piece piece){
         System.out.println("setting piece on dest tile: " + piece);
         this.piece = piece;
-        if(this instanceof EmptyTile){
-            OccupiedTile occupiedTile = new OccupiedTile(this.tileNumber, piece);
-            this.tileNumber = occupiedTile.tileNumber;
-            this.piece = occupiedTile.piece;
-        }
-        this.piece = piece;
+        /*if(piece != null){
+            piece.setTileCoordinate(this.tileNumber);
+        }*/
     }
 
     public void clearPiece(){
         System.out.println("clearing piece from this tile: " + tileNumber);
         this.piece = null;
-        if(this instanceof OccupiedTile){
-            EmptyTile emptyTile = new EmptyTile(this.tileNumber);
-            this.tileNumber = emptyTile.tileNumber;
-        }
-        this.piece = null;
     }
 
-    public static final class EmptyTile extends Tile{
+    /*public static final class EmptyTile extends Tile{
         EmptyTile(final int tileNumber){
             super(tileNumber);
         }
@@ -59,7 +51,7 @@ public abstract class Tile {
         public Piece getPiece(){
             return null;
         }
-    }
+    }*/
     public static final class OccupiedTile extends Tile{
         private final Piece pieceOnTile;
 
@@ -69,11 +61,11 @@ public abstract class Tile {
         }
         @Override
         public boolean isOccupied(){
-            return true;
+            return pieceOnTile != null;
         }
         @Override
         public Piece getPiece(){
-            return this.pieceOnTile;
+            return pieceOnTile;
         }
     }
 }

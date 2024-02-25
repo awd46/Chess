@@ -58,6 +58,14 @@ public class Chess {
 		ReturnPlay returnPlay = new ReturnPlay();
 		Players currentPlayer = getCurrentPlayer(turn);
 		System.out.println("Move : " + move);
+		if(Coordinates.isResignMove(move)){
+			returnPlay.message = (currentPlayer == Players.WHITE) ? ReturnPlay.Message.RESIGN_WHITE_WINS : ReturnPlay.Message.RESIGN_BLACK_WINS;
+			return returnPlay;
+		}
+		if(Coordinates.isDrawRequest(move)){
+			returnPlay.message = (currentPlayer == Players.WHITE) ? ReturnPlay.Message.DRAW : ReturnPlay.Message.DRAW;
+			return returnPlay;
+		}
 		// Parse the move
 		int[] parsedMove = Coordinates.parseMove(move);
 		int sourceSquare = parsedMove[0];
