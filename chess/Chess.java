@@ -74,6 +74,7 @@ public class Chess {
 		System.out.println("dest square : " + destinationSquare);
 		// Get the tile object for the source square
 		Tile sourceTile = board.getTile(sourceSquare);
+		Tile destTile = board.getTile(destinationSquare);
 		System.out.println("source tile is occupied" + sourceTile.isOccupied());
 		System.out.println("Piece on source tile : " + sourceTile.getPiece());
 		// Check if the move is legal
@@ -108,7 +109,10 @@ public class Chess {
 			return returnPlay;
 		}
 		// Make the move on the board
+
+
 		board.makeMove(sourceSquare, destinationSquare, move);
+
 		// Check for check, checkmate, stalemate
 		if (board.isInCheck(currentPlayer)) {
 			returnPlay.message = ReturnPlay.Message.CHECK;
