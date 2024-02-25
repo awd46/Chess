@@ -30,20 +30,15 @@ public abstract class Tile {
     public void setPiece(Piece piece){
         System.out.println("setting piece on dest tile: " + piece);
         this.piece = piece;
-        if(piece != null){
-            piece.setTileCoordinate(this.tileNumber);
-        }
     }
 
     public Piece clearPiece(){
         System.out.println("clearing piece from this tile: " + tileNumber);
         Piece removedPiece = this.piece;
         this.piece = null;
-        if(removedPiece != null){
-            removedPiece.setTileCoordinate(-1);
-        }
         return removedPiece;
     }
+    
 
     /*public static final class EmptyTile extends Tile{
         EmptyTile(final int tileNumber){

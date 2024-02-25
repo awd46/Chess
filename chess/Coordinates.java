@@ -11,6 +11,7 @@ public class Coordinates {
 
     public static int[] parseMove(String move){
 		//splits the notation into the sourcesquare and the destsquare
+		move = move.trim();
         String[] moveParts = move.split(" ");
 		int sourceSqure = parseSquare(moveParts[0]);
 		int destSquare = parseSquare(moveParts[1]);

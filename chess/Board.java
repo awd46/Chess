@@ -70,15 +70,17 @@ public class Board {
             }
         }
         if(isLegalMove){
-            Piece capturedPiece = destinationTile.getPiece();
-            if(capturedPiece != null){
+            /*if(destinationTile.isOccupied()){
                 destinationTile.clearPiece();
-            }
+            }*/
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
-            //piece.setTileCoordinate(destinationTileNumber);
+            piece.setTileCoordinate(destinationTileNumber);
+        }else{
+            return;
         }
 
+        /* 
         //handling castling
         else if(piece instanceof King && isCastlingMove(sourceTile, destinationTile)){
             int destinationFile = (destinationTileNumber - 1) % 8;
@@ -86,7 +88,7 @@ public class Board {
             //move the King
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
-            //piece.setTileCoordinate(destinationTileNumber);
+            piece.setTileCoordinate(destinationTileNumber);
             //move the Rook
             Tile rookSourceTile, rookDestinationTile;
             if(destinationFile == 6){
@@ -99,7 +101,7 @@ public class Board {
             Piece rook = rookSourceTile.getPiece();
             rookSourceTile.clearPiece();
             rookDestinationTile.setPiece(rook);
-            //rook.setTileCoordinate(rookDestinationTile.getTileNumber());
+            rook.setTileCoordinate(rookDestinationTile.getTileNumber());
         }
             else if(isEnPassantMove(sourceTile, destinationTile)){
                 int capturedPawnTileNumber = destinationTileNumber + (piece.getColor().getDirection() * -8);
@@ -133,9 +135,9 @@ public class Board {
             }
         }else{
             return;
-        }
+        }*/
     }
-
+    
     public Tile getTile(int tileNumber){
         //convert tileNumber to row and colum indices
         int row = (tileNumber - 1) / 8;
