@@ -28,15 +28,15 @@ public abstract class Tile {
     }
 
     public void setPiece(Piece piece){
-        System.out.println("setting piece on dest tile: " + piece);
+        //System.out.println("setting piece on dest tile: " + piece);
         this.piece = piece;
     }
 
-    public Piece clearPiece(){
-        System.out.println("clearing piece from this tile: " + tileNumber);
-        Piece removedPiece = this.piece;
+    public void clearPiece(){
+        //System.out.println("clearing piece from this tile: " + tileNumber);
+        //Piece removedPiece = this.piece;
         this.piece = null;
-        return removedPiece;
+        //return removedPiece;
     }
     
 

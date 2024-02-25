@@ -56,6 +56,12 @@ public class Board {
     public void makeMove(int sourceTileNumber, int destinationTileNumber, String move){
         Tile sourceTile = getTile(sourceTileNumber);
         Tile destinationTile = getTile(destinationTileNumber);
+        //int sourceRow = (sourceTileNumber - 1) / 8;
+        //int sourceCol = (sourceTileNumber - 1) % 8;
+        //int destRow = (destinationTileNumber - 1) / 8;
+        //int destCol = (destinationTileNumber - 1) % 8;
+        //Tile sourceTile = tiles[sourceRow][sourceCol];
+        //Tile destinationTile = tiles[destRow][destCol];
         Piece piece = sourceTile.getPiece();
         if(piece == null){
             return;
@@ -72,7 +78,13 @@ public class Board {
         if(isLegalMove){
             /*if(destinationTile.isOccupied()){
                 destinationTile.clearPiece();
-            }*/
+            }
+            sourceTile.clearPiece();
+                System.out.println("clearing piece from this tile " + sourceTileNumber);
+            destinationTile.setPiece(piece);
+                System.out.println("setting piece on tile :" + destinationTileNumber + piece);
+            piece.setTileCoordinate(destinationTileNumber);
+                System.out.println("pieces tile coordinate updated to : " + destinationTileNumber);*/
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
             piece.setTileCoordinate(destinationTileNumber);

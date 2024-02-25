@@ -33,7 +33,7 @@ public abstract class Piece {
     public abstract List<Move> calculateLegalMoves(Board board);
     
     public void setTileCoordinate(int tileCoordinate){
-        System.out.println("Updating piece's tile coorsinate: " + tileCoordinate);
+        //System.out.println("Updating piece's tile coorsinate: " + tileCoordinate);
         this.tileCoordinate = tileCoordinate;
     }
 

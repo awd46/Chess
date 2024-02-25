@@ -75,7 +75,7 @@ public class Chess {
 		// Get the tile object for the source square
 		Tile sourceTile = board.getTile(sourceSquare);
 		Tile destTile = board.getTile(destinationSquare);
-		System.out.println("source tile is occupied" + sourceTile.isOccupied());
+		System.out.println("source tile is occupied: " + sourceTile.isOccupied());
 		System.out.println("Piece on source tile : " + sourceTile.getPiece());
 		// Check if the move is legal
 		Piece piece = sourceTile.getPiece();
