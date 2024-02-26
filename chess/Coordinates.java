@@ -9,13 +9,17 @@ public class Coordinates {
 		return (8 - rank) * 8 + file;
 	}
 
-    public static int[] parseMove(String move){
+    public static Object[] parseMove(String move){
 		//splits the notation into the sourcesquare and the destsquare
 		move = move.trim();
         String[] moveParts = move.split(" ");
 		int sourceSqure = parseSquare(moveParts[0]);
 		int destSquare = parseSquare(moveParts[1]);
-		return new int[]{sourceSqure, destSquare};
+		String promotionPieceType = null;
+		if (moveParts.length > 2){
+			promotionPieceType = parsePromotionPiece(move);
+		}
+		return new Object[]{sourceSqure, destSquare, promotionPieceType};
     }
 	public static String parsePromotionPiece(String move){
 		if(move.length() > 5 && Character.isLetter(move.charAt(5))){

@@ -67,9 +67,10 @@ public class Chess {
 			return returnPlay;
 		}
 		// Parse the move
-		int[] parsedMove = Coordinates.parseMove(move);
-		int sourceSquare = parsedMove[0];
-		int destinationSquare = parsedMove[1];
+		Object[] parsedMove = Coordinates.parseMove(move);
+		int sourceSquare = (int) parsedMove[0];
+		int destinationSquare = (int) parsedMove[1];
+		String promotionPieceType = (String) parsedMove[2];
 		System.out.println("Source square : " + sourceSquare);
 		System.out.println("dest square : " + destinationSquare);
 		// Get the tile object for the source square
@@ -80,8 +81,7 @@ public class Chess {
 		// Check if the move is legal
 		Piece piece = sourceTile.getPiece();
 		System.out.println("Piece color : " + (piece != null ? piece.getColor().toString() : "null"));
-		Piece piecetwo = sourceTile.getPiece();
-		if (piecetwo == null){
+		if (piece == null){
 			System.out.println("Piece is null");
 			returnPlay.piecesOnBoard = ChessUtils.getPiecesOnBoard(board, currentPlayer);
 			returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
@@ -110,16 +110,28 @@ public class Chess {
 		}
 		// Make the move on the board
 
-
 		board.makeMove(sourceSquare, destinationSquare, move);
 
+		Players opponent = Players.BLACK;
+
 		// Check for check, checkmate, stalemate
-		if (board.isInCheck(currentPlayer)) {
+		
+		//getting opponent player to check for check or mate
+		if(currentPlayer == Players.WHITE)
+		{
+			opponent = Players.BLACK;
+		}
+		else if(currentPlayer == Players.BLACK)
+		{
+			opponent = Players.WHITE;
+		}
+		
+		if (board.isInCheck(opponent)) {
 			returnPlay.message = ReturnPlay.Message.CHECK;
-			if (board.isInCheckMate(currentPlayer)) {
+			if (board.isInCheckMate(opponent)) {
 				returnPlay.message = (currentPlayer == Players.WHITE) ? ReturnPlay.Message.CHECKMATE_WHITE_WINS : ReturnPlay.Message.CHECKMATE_BLACK_WINS;
 			}
-		} else if (board.isInCheckMate(currentPlayer)) {
+		} else if (board.isInCheckMate(opponent)) {
 			returnPlay.message = (currentPlayer == Players.WHITE) ? ReturnPlay.Message.CHECKMATE_WHITE_WINS : ReturnPlay.Message.CHECKMATE_BLACK_WINS;
 		}
 		// Update the turn

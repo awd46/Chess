@@ -71,75 +71,96 @@ public class Board {
             }
         }
         if(isLegalMove){
-            /*if(destinationTile.isOccupied()){
-                destinationTile.clearPiece();
-            }*/
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
             piece.setTileCoordinate(destinationTileNumber);
             this.printBoardState();
-        }else{
-            return;
+        }else if(isCastlingMove(sourceTile, destinationTile)){
+            handleCastling(sourceTileNumber, destinationTileNumber);
+        }else if(isEnPassantMove(sourceTile, destinationTile)){
+            handleEnPassant(sourceTileNumber, destinationTileNumber);
+        }else if (piece instanceof Pawn &&(destinationTileNumber <= 8 || destinationTileNumber >= 57)){
+            String promotionPieceType = Coordinates.parsePromotionPiece(move);
+            if(promotionPieceType!= null){
+                handlePawnPromotion(sourceTileNumber, destinationTileNumber, promotionPieceType);
+            }else{
+                handlePawnPromotion(sourceTileNumber, destinationTileNumber, "q");
+            }
         }
     }
 
-        /* 
-        //handling castling
-        else if(piece instanceof King && isCastlingMove(sourceTile, destinationTile)){
-            int destinationFile = (destinationTileNumber - 1) % 8;
-            int rank = (sourceTileNumber - 1) / 8;
-            //move the King
-            sourceTile.clearPiece();
-            destinationTile.setPiece(piece);
-            piece.setTileCoordinate(destinationTileNumber);
-            //move the Rook
-            Tile rookSourceTile, rookDestinationTile;
-            if(destinationFile == 6){
-                rookSourceTile = getTile(8 * rank + 7);
-                rookDestinationTile = getTile(8 * rank + 5);
-            }else{
-                rookSourceTile = getTile(8 * rank);
-                rookDestinationTile = getTile(8 * rank + 3);
-            }
-            Piece rook = rookSourceTile.getPiece();
-            rookSourceTile.clearPiece();
-            rookDestinationTile.setPiece(rook);
-            rook.setTileCoordinate(rookDestinationTile.getTileNumber());
-        }
-            else if(isEnPassantMove(sourceTile, destinationTile)){
-                int capturedPawnTileNumber = destinationTileNumber + (piece.getColor().getDirection() * -8);
-                Tile capturedPawnTile = getTile(capturedPawnTileNumber);
-                capturedPawnTile.clearPiece();
-        }
-
-        //handling pawn promotion
-        else if(piece instanceof Pawn){
-            int destinationRank = (destinationTileNumber - 1) / 8 + 1;
-            if(destinationRank == 8 || destinationRank == 1){
-                String promotionPiece = Coordinates.parsePromotionPiece(move);
-                if(promotionPiece != null){
-                    switch(promotionPiece.toLowerCase()){
-                        case "q":
-                            destinationTile.setPiece(new Queen(destinationTileNumber, piece.getColor()));
-                            break;
-                        case "r":
-                            destinationTile.setPiece(new Rook(destinationTileNumber, piece.getColor()));
-                            break;
-                        case "n":
-                            destinationTile.setPiece(new Knight(destinationTileNumber, piece.getColor()));
-                            break;
-                        case "b":
-                            destinationTile.setPiece(new Bishop(destinationTileNumber, piece.getColor()));
-                            break;
-                        default:
-                            destinationTile.setPiece(new Queen(destinationTileNumber, piece.getColor()));
-                    }
-                }
-            }
-        }else{
+    public void handleCastling(int sourceTileNumber, int destinationTileNumber){
+        System.out.println("made it to castling");
+        Tile sourceTile = getTile(sourceTileNumber);
+        Tile destinationTile = getTile(destinationTileNumber);
+        Piece king = sourceTile.getPiece();
+        if(!(king instanceof King) || !isCastlingMove(sourceTile, destinationTile)){
             return;
         }
-    }*/
+        int rank = (sourceTileNumber - 1) / 8;
+        Tile rookSourceTile, rookDestinationTile;
+        if(destinationTileNumber % 8 == 6){
+            rookSourceTile = getTile(8 * rank + 7);
+            rookDestinationTile = getTile(8 * rank + 5);
+        }else{
+            rookSourceTile = getTile(8 * rank);
+            rookDestinationTile = getTile(8 * rank + 3);
+        }
+        Piece rook = rookSourceTile.getPiece();
+        sourceTile.clearPiece();
+        destinationTile.setPiece(king);
+        king.setTileCoordinate(destinationTileNumber);
+        rookSourceTile.clearPiece();
+        rookDestinationTile.setPiece(rook);
+        rook.setTileCoordinate(rookDestinationTile.getTileNumber());
+        this.printBoardState();
+    }
+    
+    public void handleEnPassant(int sourceTileNumber, int destinationTileNumber){
+        System.out.println("made it to enpassant");
+        Tile sourceTile = getTile(sourceTileNumber);
+        Tile destinationTile = getTile(destinationTileNumber);
+        Piece pawn = sourceTile.getPiece();
+        if(!(pawn instanceof Pawn) || !isEnPassantMove(sourceTile, destinationTile)){
+            return;
+        }
+        int capturedPawnTileNumber = destinationTileNumber + (pawn.getColor().getDirection() * -8);
+        Tile capturedPawnTile = getTile(capturedPawnTileNumber);
+        capturedPawnTile.clearPiece();
+        this.printBoardState();
+    }
+
+    public void handlePawnPromotion(int sourceTileNumber, int destinationTileNumber, String promotionPieceType){
+        System.out.println("made it to pawn promotion");
+        Tile destinationTile = getTile(destinationTileNumber);
+        Piece pawn = destinationTile.getPiece();
+        if(!(pawn instanceof Pawn)){
+            return;
+        }
+        Piece newPiece;
+        switch(promotionPieceType.toLowerCase()){
+            case "q":
+                newPiece = new Queen(destinationTileNumber, pawn.getColor());
+                break;
+            case "r":
+                newPiece = new Rook(destinationTileNumber, pawn.getColor());
+                break;
+            case "n":
+                newPiece = new Knight(destinationTileNumber, pawn.getColor());
+                break;
+            case "b":
+                newPiece = new Bishop(destinationTileNumber, pawn.getColor());
+                break;
+            default:
+                newPiece = new Queen(destinationTileNumber, pawn.getColor());
+                break;
+        }
+        destinationTile.setPiece(newPiece);
+        this.printBoardState();
+    }
+
+
+
     
     public Tile getTile(int tileNumber){
         //convert tileNumber to row and colum indices
@@ -163,6 +184,7 @@ public class Board {
         }
         int sourceFile = (sourceTile.getTileNumber() - 1) % 8;
         int destinationFile = (destinationTile.getTileNumber() - 1) % 8;
+        System.out.println("source : " + sourceFile + "Dest file : " + destinationFile);
         if(Math.abs(destinationFile - sourceFile) != 2){
             return false;
         }
@@ -177,9 +199,9 @@ public class Board {
         }
         Tile rookTile;
         if(destinationFile == 6){
-            rookTile = tiles[rank][7];
+            rookTile = getTile(8 * rank + 7);
         }else{
-            rookTile = tiles[rank][0];
+            rookTile = getTile(8 * rank);
         }
         Piece rook = rookTile.getPiece();
         if(!(rook instanceof Rook) || rook.hasMoved()){
