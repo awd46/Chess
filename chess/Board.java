@@ -72,7 +72,7 @@ public class Board {
                 break;
             }
         }
-        if(isLegalMove && !isPawnPromotion(sourceTile, destinationTile)){
+        if(isLegalMove && !isPawnPromotion(sourceTile, destinationTile) && isMoveWithinBounds(sourceTileNumber, destinationTileNumber)){
             lastMove = new Move(sourceTileNumber, destinationTileNumber);
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
@@ -425,5 +425,14 @@ public class Board {
     }
     public Move getLastMove(){
         return lastMove;
+    }
+    public boolean isMoveWithinBounds(int sourceTileNumber, int destinationTileNumber) {
+        // Column index of the source tile
+        int destinationRank = (destinationTileNumber - 1) / 8; // Row index of the destination tile
+        int destinationFile = (destinationTileNumber - 1) % 8; // Column index of the destination tile
+        
+        // Check if the destination tile is within the bounds of the board (from a1 to h8)
+        return destinationRank >= 0 && destinationRank < 8 &&
+               destinationFile >= 0 && destinationFile < 8;
     }
 }
