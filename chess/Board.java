@@ -7,12 +7,14 @@ public class Board {
     private final Tile[][] tiles;
     private final Players whitePlayer;
     private final Players blackPlayer;
+    private Move lastMove;
 
     public Board(Players whitePlayer, Players blackPlayer){
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         tiles = new Tile[8][8];
         initializeBoard();
+        lastMove = null;
     }
 
     public static boolean isValidTile(int tileNumber){
@@ -71,6 +73,7 @@ public class Board {
             }
         }
         if(isLegalMove){
+            lastMove = new Move(sourceTileNumber, destinationTileNumber);
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
             piece.setTileCoordinate(destinationTileNumber);
@@ -135,16 +138,41 @@ public class Board {
     }
     
     public void handleEnPassant(int sourceTileNumber, int destinationTileNumber){
-        System.out.println("made it to enpassant");
+        System.out.println("made it to enpassant!!! keep going!");
         Tile sourceTile = getTile(sourceTileNumber);
         Tile destinationTile = getTile(destinationTileNumber);
         Piece pawn = sourceTile.getPiece();
-        if(!(pawn instanceof Pawn) || !isEnPassantMove(sourceTile, destinationTile)){
+        if(!(pawn instanceof Pawn)){
+            System.out.println("not a pawn");
             return;
         }
-        int capturedPawnTileNumber = destinationTileNumber + (pawn.getColor().getDirection() * -8);
-        Tile capturedPawnTile = getTile(capturedPawnTileNumber);
-        capturedPawnTile.clearPiece();
+        int difference = destinationTileNumber - sourceTileNumber;
+        System.out.println("differ : " + difference);
+        Players pawnColor = pawn.getColor();
+        Tile cappedTile;
+        if(pawnColor == Players.WHITE){
+            if(difference == -9){
+                cappedTile = getTile(sourceTileNumber - 1);
+            }else if(difference == -7){
+                cappedTile = getTile(sourceTileNumber + 1);
+            }else{
+                return;
+            }
+        }else if(pawnColor == Players.BLACK){
+            if(difference == 9){
+                cappedTile = getTile(sourceTileNumber + 1);
+            }else if(difference == 7){
+                cappedTile = getTile(sourceTileNumber - 1);
+            }else{
+                return;
+            }
+        }else{
+            return;
+        }
+        sourceTile.clearPiece();
+        destinationTile.setPiece(pawn);
+        pawn.setTileCoordinate(destinationTileNumber);
+        cappedTile.clearPiece();
         pawn.move();
         this.printBoardState();
     }
@@ -239,26 +267,47 @@ public class Board {
         return true;
     }
 
-    public boolean isEnPassantMove(Tile sourceTile, Tile destinationTile){
-        System.out.println("Made it to isenpassant?");
-        Piece piece = sourceTile.getPiece();
-        if(piece instanceof Pawn){
-            int sourceRank = sourceTile.getTileNumber() / 8;
-            int destinationRank = destinationTile.getTileNumber() / 8;
-            int sourceFile = sourceTile.getTileNumber() % 8;
-            int destinationFile = destinationTile.getTileNumber() % 8;
-            if(Math.abs(destinationFile - sourceFile) == 1 && Math.abs(destinationRank - sourceRank) == 1 && destinationTile.isEmpty()){
-                Tile adjacentTile = getTile(destinationTile.getTileNumber() - (8 * piece.getColor().getDirection()));
-                Piece adjacentPiece = adjacentTile.getPiece();
-                System.out.println("returning good?");
-                if (adjacentPiece instanceof Pawn){
-                    System.out.println("it knows its a pawn ad");
-                    return true;
-                }
-            }
+    public boolean isEnPassantMove(Tile sourceTile, Tile destinationTile) {
+        System.out.println("made it to is enpassant?");
+        Piece piece = sourceTile.getPiece(); //get the source tile pawn
+        if(!(piece instanceof Pawn)){
+            System.out.println("not a pawn");
+            return false;
+        }
+        Players pawnColor = piece.getColor();
+        // Determine the direction of movement based on the pawn's color
+        int directionleft;
+        int direcitonright;
+        if (pawnColor == Players.WHITE){
+            directionleft = sourceTile.getTileNumber() - 9;
+            direcitonright = sourceTile.getTileNumber() - 7;
         }else{
-        System.out.println("not a en passant");
-        return false;
+            directionleft = sourceTile.getTileNumber() + 9;
+            direcitonright = sourceTile.getTileNumber() + 7;
+        }
+        Tile leftDiagTile = getTile(directionleft);
+        Tile rightDiagTile = getTile(direcitonright);
+        // Check if the diagonal tiles are empty
+        boolean leftDiagTileEmpty = leftDiagTile.isEmpty();
+        boolean rightDiagTileEmpty = rightDiagTile.isEmpty();
+        if(!leftDiagTileEmpty || !rightDiagTileEmpty){
+            return false;
+        }else{
+            directionleft = sourceTile.getTileNumber() -1 ;
+            direcitonright = sourceTile.getTileNumber() +1 ;
+        }
+        Tile leftHorizTile = getTile(directionleft);
+        Tile rightHorizTile = getTile(direcitonright);
+        boolean leftHorizTileEmpty = leftHorizTile.isEmpty();
+        boolean rightHorizTileEmpty = rightHorizTile.isEmpty();
+        if((!leftHorizTileEmpty && leftDiagTileEmpty) || (!rightHorizTileEmpty && rightDiagTileEmpty)){
+            System.out.println("close");
+            int lastMoveSourceRank = (lastMove.getcurrentTile() - 1) / 8;
+            int lastMoveDestinationRank = (lastMove.getdestinationTile() - 1) / 8;
+            boolean lastMoveWasTwoSpacePawnMove = Math.abs(lastMoveSourceRank - lastMoveDestinationRank) == 2;
+            if (lastMoveWasTwoSpacePawnMove){
+                return true;
+            }
         }
         return false;
     }
@@ -340,5 +389,8 @@ public class Board {
             System.out.println(8 - i); // Print row number at the end
         }
         System.out.println(" a  b  c  d  e  f  g  h");
+    }
+    public Move getLastMove(){
+        return lastMove;
     }
 }
