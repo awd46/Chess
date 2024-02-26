@@ -7,10 +7,14 @@ public abstract class Piece {
 
     protected int tileCoordinate;
     protected final Players color;
-    private boolean hasMoved;
+    private boolean hasMoved = false;
 
     public boolean hasMoved(){
-        return hasMoved;
+        return this.hasMoved;
+    }
+
+    public void move(){
+        this.hasMoved = true;
     }
 
     public void setMoves(boolean hasMoved){

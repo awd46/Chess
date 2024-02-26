@@ -102,7 +102,7 @@ public class Chess {
 				break;
 			}
 		}
-		if (!isValidMove) {
+		if (!isValidMove && !board.isCastlingMove(sourceTile, destTile) && !board.isEnPassantMove(sourceTile, destTile)) {
 			System.out.println("Invalid move");
 			returnPlay.piecesOnBoard = ChessUtils.getPiecesOnBoard(board, currentPlayer);
 			returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;

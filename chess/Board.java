@@ -74,6 +74,7 @@ public class Board {
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
             piece.setTileCoordinate(destinationTileNumber);
+            piece.move();
             this.printBoardState();
         }else if(isCastlingMove(sourceTile, destinationTile)){
             handleCastling(sourceTileNumber, destinationTileNumber);
@@ -94,25 +95,42 @@ public class Board {
         Tile sourceTile = getTile(sourceTileNumber);
         Tile destinationTile = getTile(destinationTileNumber);
         Piece king = sourceTile.getPiece();
-        if(!(king instanceof King) || !isCastlingMove(sourceTile, destinationTile)){
+        if(!(king instanceof King)){
+            System.out.println("not king");
             return;
         }
-        int rank = (sourceTileNumber - 1) / 8;
+        if(king.hasMoved()){
+            System.out.println("king moved");
+            return;
+        }
         Tile rookSourceTile, rookDestinationTile;
-        if(destinationTileNumber % 8 == 6){
-            rookSourceTile = getTile(8 * rank + 7);
-            rookDestinationTile = getTile(8 * rank + 5);
+        if(destinationTileNumber % 8 == 7 && destinationTileNumber == 63){
+            rookSourceTile = getTile(64);
+            rookDestinationTile = getTile(62);
+        }else if (destinationTileNumber % 8 == 7 && destinationTileNumber == 7){
+            rookSourceTile = getTile(8);
+            rookDestinationTile = getTile(6);
+        }else if (destinationTileNumber % 8 == 3 && destinationTileNumber == 59){
+            rookSourceTile = getTile(57);
+            rookDestinationTile = getTile(60);
+        }else if (destinationTileNumber % 8 == 3 && destinationTileNumber == 3){
+            rookSourceTile = getTile(1);
+            rookDestinationTile = getTile(4);
         }else{
-            rookSourceTile = getTile(8 * rank);
-            rookDestinationTile = getTile(8 * rank + 3);
+            return;
         }
         Piece rook = rookSourceTile.getPiece();
+        if(rook.hasMoved()){
+            return;
+        }
         sourceTile.clearPiece();
         destinationTile.setPiece(king);
         king.setTileCoordinate(destinationTileNumber);
         rookSourceTile.clearPiece();
         rookDestinationTile.setPiece(rook);
         rook.setTileCoordinate(rookDestinationTile.getTileNumber());
+        king.move();
+        rook.move();
         this.printBoardState();
     }
     
@@ -127,6 +145,7 @@ public class Board {
         int capturedPawnTileNumber = destinationTileNumber + (pawn.getColor().getDirection() * -8);
         Tile capturedPawnTile = getTile(capturedPawnTileNumber);
         capturedPawnTile.clearPiece();
+        pawn.move();
         this.printBoardState();
     }
 
@@ -156,6 +175,7 @@ public class Board {
                 break;
         }
         destinationTile.setPiece(newPiece);
+        newPiece.move();
         this.printBoardState();
     }
 
@@ -176,15 +196,15 @@ public class Board {
         tiles[row][column] = tile;
     }
 
-    private boolean isCastlingMove(Tile sourceTile, Tile destinationTile){
+    public boolean isCastlingMove(Tile sourceTile, Tile destinationTile){
         //check if piece being moved is king
-        Piece piece = sourceTile.getPiece();
-        if(!(piece instanceof King) || piece.hasMoved()){
-            return false;
+        System.out.println("made it to iscastlingmove?");
+        Piece piece = sourceTile.getPiece();//get the king
+        if(!(piece instanceof King) || piece.hasMoved()){;
+            return false;//hasn;t moved
         }
         int sourceFile = (sourceTile.getTileNumber() - 1) % 8;
         int destinationFile = (destinationTile.getTileNumber() - 1) % 8;
-        System.out.println("source : " + sourceFile + "Dest file : " + destinationFile);
         if(Math.abs(destinationFile - sourceFile) != 2){
             return false;
         }
@@ -198,19 +218,29 @@ public class Board {
             }
         }
         Tile rookTile;
-        if(destinationFile == 6){
-            rookTile = getTile(8 * rank + 7);
+        int destinationTileNumber = destinationTile.getTileNumber();
+        int destFile = destinationTileNumber % 8 - 1;
+        if(destFile == 2 && destinationTileNumber == 59){
+            rookTile = getTile(57);
+        }else if (destFile == 2 && destinationTileNumber == 3){
+            rookTile = getTile(1);
+        }else if(destFile == 6 && destinationTileNumber == 63){
+            rookTile = getTile(64);
+        }else if(destFile == 6 && destinationTileNumber == 7){
+            rookTile = getTile(8);
         }else{
-            rookTile = getTile(8 * rank);
+            return false;
         }
         Piece rook = rookTile.getPiece();
         if(!(rook instanceof Rook) || rook.hasMoved()){
             return false;
         }
+        System.out.println("yes it is castling, back to work");
         return true;
     }
 
-    private boolean isEnPassantMove(Tile sourceTile, Tile destinationTile){
+    public boolean isEnPassantMove(Tile sourceTile, Tile destinationTile){
+        System.out.println("Made it to isenpassant?");
         Piece piece = sourceTile.getPiece();
         if(piece instanceof Pawn){
             int sourceRank = sourceTile.getTileNumber() / 8;
@@ -220,8 +250,15 @@ public class Board {
             if(Math.abs(destinationFile - sourceFile) == 1 && Math.abs(destinationRank - sourceRank) == 1 && destinationTile.isEmpty()){
                 Tile adjacentTile = getTile(destinationTile.getTileNumber() - (8 * piece.getColor().getDirection()));
                 Piece adjacentPiece = adjacentTile.getPiece();
-                return adjacentPiece instanceof Pawn && adjacentPiece.getColor() != piece.getColor();
+                System.out.println("returning good?");
+                if (adjacentPiece instanceof Pawn){
+                    System.out.println("it knows its a pawn ad");
+                    return true;
+                }
             }
+        }else{
+        System.out.println("not a en passant");
+        return false;
         }
         return false;
     }
