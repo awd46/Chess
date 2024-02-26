@@ -72,7 +72,7 @@ public class Board {
                 break;
             }
         }
-        if(isLegalMove){
+        if(isLegalMove && !isPawnPromotion(sourceTile, destinationTile)){
             lastMove = new Move(sourceTileNumber, destinationTileNumber);
             sourceTile.clearPiece();
             destinationTile.setPiece(piece);
@@ -83,13 +83,8 @@ public class Board {
             handleCastling(sourceTileNumber, destinationTileNumber);
         }else if(isEnPassantMove(sourceTile, destinationTile)){
             handleEnPassant(sourceTileNumber, destinationTileNumber);
-        }else if (piece instanceof Pawn &&(destinationTileNumber <= 8 || destinationTileNumber >= 57)){
-            String promotionPieceType = Coordinates.parsePromotionPiece(move);
-            if(promotionPieceType!= null){
-                handlePawnPromotion(sourceTileNumber, destinationTileNumber, promotionPieceType);
-            }else{
-                handlePawnPromotion(sourceTileNumber, destinationTileNumber, "q");
-            }
+        }else if(isPawnPromotion(sourceTile, destinationTile)){
+            handlePawnPromotion(sourceTileNumber, destinationTileNumber, move);
         }
     }
 
@@ -180,29 +175,38 @@ public class Board {
     public void handlePawnPromotion(int sourceTileNumber, int destinationTileNumber, String promotionPieceType){
         System.out.println("made it to pawn promotion");
         Tile destinationTile = getTile(destinationTileNumber);
-        Piece pawn = destinationTile.getPiece();
+        Tile sourceTile = getTile(sourceTileNumber);
+        Piece pawn = sourceTile.getPiece();
         if(!(pawn instanceof Pawn)){
             return;
         }
         Piece newPiece;
+        System.out.println("prom piece type : " + promotionPieceType);
         switch(promotionPieceType.toLowerCase()){
             case "q":
+                System.out.println("new queen");
                 newPiece = new Queen(destinationTileNumber, pawn.getColor());
                 break;
             case "r":
+                System.out.println("new rook");
                 newPiece = new Rook(destinationTileNumber, pawn.getColor());
                 break;
             case "n":
+                System.out.println("new knigth");
                 newPiece = new Knight(destinationTileNumber, pawn.getColor());
                 break;
             case "b":
+                System.out.println("new bishop");
                 newPiece = new Bishop(destinationTileNumber, pawn.getColor());
                 break;
             default:
+                System.out.println("new queen");
                 newPiece = new Queen(destinationTileNumber, pawn.getColor());
                 break;
         }
+        sourceTile.clearPiece();
         destinationTile.setPiece(newPiece);
+        newPiece.setTileCoordinate(destinationTileNumber);
         newPiece.move();
         this.printBoardState();
     }
@@ -222,6 +226,30 @@ public class Board {
         int row = (tileNumber - 1) / 8;
         int column = (tileNumber - 1) % 8;
         tiles[row][column] = tile;
+    }
+
+    public boolean isPawnPromotion(Tile sourceTile, Tile destinationTile){
+        System.out.println("made it to pawn promotion?");
+        Piece pawn = sourceTile.getPiece();
+        if(!(pawn instanceof Pawn)){
+            return false;
+        }
+        Players pawnColor = pawn.getColor();
+        int destinationTileNumber = destinationTile.getTileNumber();
+        if(pawnColor == Players.WHITE){
+            if(destinationTileNumber <= 8 && destinationTileNumber >= 1){
+                return true;
+            }else{
+                return false;
+            }
+        }else if(pawnColor == Players.BLACK){
+            if(destinationTileNumber <=64 && destinationTileNumber >= 57){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
     }
 
     public boolean isCastlingMove(Tile sourceTile, Tile destinationTile){
@@ -300,13 +328,18 @@ public class Board {
         Tile rightHorizTile = getTile(direcitonright);
         boolean leftHorizTileEmpty = leftHorizTile.isEmpty();
         boolean rightHorizTileEmpty = rightHorizTile.isEmpty();
+        if(lastMove == null){
+            return false;
+        }
         if((!leftHorizTileEmpty && leftDiagTileEmpty) || (!rightHorizTileEmpty && rightDiagTileEmpty)){
             System.out.println("close");
             int lastMoveSourceRank = (lastMove.getcurrentTile() - 1) / 8;
             int lastMoveDestinationRank = (lastMove.getdestinationTile() - 1) / 8;
             boolean lastMoveWasTwoSpacePawnMove = Math.abs(lastMoveSourceRank - lastMoveDestinationRank) == 2;
-            if (lastMoveWasTwoSpacePawnMove){
+            if (lastMoveWasTwoSpacePawnMove && (!leftHorizTileEmpty && leftDiagTileEmpty) || (!rightHorizTileEmpty && rightDiagTileEmpty)){
                 return true;
+            }else if(!lastMoveWasTwoSpacePawnMove){
+                return false;
             }
         }
         return false;
