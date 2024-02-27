@@ -56,7 +56,7 @@ public class Board {
         }
     }
 
-    public void makeMove(int sourceTileNumber, int destinationTileNumber, String move){
+    public void makeMove(int sourceTileNumber, int destinationTileNumber, String move, String promotionPieceType){
         Tile sourceTile = getTile(sourceTileNumber);
         Tile destinationTile = getTile(destinationTileNumber);
         Piece piece = sourceTile.getPiece();
@@ -84,7 +84,8 @@ public class Board {
         }else if(isEnPassantMove(sourceTile, destinationTile)){
             handleEnPassant(sourceTileNumber, destinationTileNumber);
         }else if(isPawnPromotion(sourceTile, destinationTile)){
-            handlePawnPromotion(sourceTileNumber, destinationTileNumber, move);
+            System.out.println("promotion piece type" + promotionPieceType);
+            handlePawnPromotion(sourceTileNumber, destinationTileNumber, promotionPieceType);
         }
     }
 
@@ -366,7 +367,7 @@ public class Board {
         List<Move> legalMoves = getAllLegalMoves(player);
         for(Move move : legalMoves){
             Board newBoard = this.clone();
-            newBoard.makeMove(move.getcurrentTile(), move.getdestinationTile(), null);
+            newBoard.makeMove(move.getcurrentTile(), move.getdestinationTile(), null, null);
             if(!newBoard.isInCheck(player)){
                 return false;
             }

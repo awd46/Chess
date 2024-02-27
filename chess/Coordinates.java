@@ -17,7 +17,7 @@ public class Coordinates {
 		int destSquare = parseSquare(moveParts[1]);
 		String promotionPieceType = null;
 		if (moveParts.length > 2){
-			promotionPieceType = parsePromotionPiece(move);
+			promotionPieceType = moveParts[2];
 		}
 		return new Object[]{sourceSqure, destSquare, promotionPieceType};
     }

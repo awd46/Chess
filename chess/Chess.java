@@ -110,7 +110,7 @@ public class Chess {
 		}
 		// Make the move on the board
 
-		board.makeMove(sourceSquare, destinationSquare, move);
+		board.makeMove(sourceSquare, destinationSquare, move ,promotionPieceType);
 
 		Players opponent = Players.BLACK;
 
